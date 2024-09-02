@@ -1,3 +1,9 @@
 %syntax-version=1.0.0
 %project=engrenages
 
+product_tables_creation 2024-08-30T20:04:32Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating product tables
+structure_tables_creation 2024-08-30T20:04:34Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating structure tables
+user_tables_creation 2024-08-30T20:05:17Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating user tables
+structure_functions 2024-08-30T20:05:56Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating structure functions
+product_functions 2024-08-30T20:06:39Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating product functions
+user_functions 2024-08-30T20:06:57Z Nicolas Sokolowski <sokolowski.nicolas@gmail.com> # creating user functions
