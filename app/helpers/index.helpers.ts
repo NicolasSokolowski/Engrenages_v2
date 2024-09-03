@@ -4,6 +4,7 @@ import { makeRandomString } from "./makeRandomString.helper";
 import { UserPayload } from "./UserPayload.helper";
 import { verifyToken } from "./verifyToken.helpers";
 import { Password } from "./Password";
+import { TableNames } from "./TableNames";
 
 export {
   errorCatcher,
@@ -11,5 +12,6 @@ export {
   makeRandomString,
   UserPayload,
   verifyToken,
-  Password
+  Password,
+  TableNames
 };

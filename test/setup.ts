@@ -83,7 +83,7 @@ beforeEach(async () => {
   const deleteLocationBlockages = `DELETE FROM "location_blockage_type"`;
   const deleteLocations = `DELETE FROM "location"`;
   const deleteProducts = `DELETE FROM "product"`;
-  const deleteBlockages = `DELETE FROM "product_blockage_code"`;
+  const deleteBlockages = `DELETE FROM "product_blockage_type"`;
 
   try {
     await pool.query(deleteLocations);
