@@ -6,7 +6,14 @@
   "scripts": {
     "dev": "ts-node-dev --poll index.ts",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "db:reset": "sqitch revert -y && sqitch deploy"
+    "db:reset": "sqitch revert -y test_engrenages && sqitch deploy test_engrenages"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup.ts"
+    ]
   },
   "keywords": [],
   "author": "",
