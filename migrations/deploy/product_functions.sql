@@ -52,6 +52,7 @@ CREATE FUNCTION create_product(json) RETURNS TABLE (
   id INT,
   title VARCHAR(100),
   description TEXT,
+  reference CHAR(10),
   ean CHAR(13),
   length DECIMAL,
   width DECIMAL,
@@ -65,6 +66,7 @@ CREATE FUNCTION create_product(json) RETURNS TABLE (
   (
     "title",
     "description",
+    "reference",
     "ean",
     "length",
     "width",
@@ -75,7 +77,8 @@ CREATE FUNCTION create_product(json) RETURNS TABLE (
   ) VALUES (
     ($1->>'title')::VARCHAR(100),
     ($1->>'description')::TEXT,
-    ($1->>'ean')::VARCHAR(13),
+    ($1->>'reference')::CHAR(10),
+    ($1->>'ean')::CHAR(13),
     ($1->>'length')::DECIMAL,
     ($1->>'width')::DECIMAL,
     ($1->>'height')::DECIMAL,
@@ -83,7 +86,7 @@ CREATE FUNCTION create_product(json) RETURNS TABLE (
     ($1->>'price')::DECIMAL,
     ($1->>'product_blockage_name')::CHAR(3)
   )
-  RETURNING id, title, description, ean, length, width, height, product_image_url, price, product_blockage_name
+  RETURNING id, title, description, reference, ean, length, width, height, product_image_url, price, product_blockage_name
 
 $$ LANGUAGE SQL STRICT;
 
@@ -91,6 +94,7 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
     id INT,
     title VARCHAR(100),
     description TEXT,
+    reference CHAR(10),
     ean CHAR(13),
     length DECIMAL,
     width DECIMAL,
@@ -103,6 +107,7 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
   UPDATE "product" SET (
     "title",
     "description",
+    "reference",
     "ean",
     "length",
     "width",
@@ -113,7 +118,8 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
   ) = (
     COALESCE(($1->>'title')::VARCHAR(100), "title"),
     COALESCE(($1->>'description')::TEXT, "description"),
-    COALESCE(($1->>'ean')::VARCHAR(13), "ean"),
+    COALESCE(($1->>'reference')::CHAR(10), "reference"),
+    COALESCE(($1->>'ean')::CHAR(13), "ean"),
     COALESCE(($1->>'length')::DECIMAL, "length"),
     COALESCE(($1->>'width')::DECIMAL, "width"),
     COALESCE(($1->>'height')::DECIMAL, "height"),
@@ -122,7 +128,7 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
     NOW()
   )
   WHERE "id" = ($1->>'id')::INT
-  RETURNING id, title, description, ean, length, width, height, product_image_url, price, "updated_at"
+  RETURNING id, title, description, reference, ean, length, width, height, product_image_url, price, "updated_at"
 
 $$ LANGUAGE SQL STRICT;
 

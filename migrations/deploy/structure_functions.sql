@@ -155,6 +155,7 @@ CREATE FUNCTION update_location(json) RETURNS TABLE (
     "position" CHAR(4),
     lvl CHAR(1),
     lvl_position CHAR(2),
+    location CHAR(15),
     updated_at TIMESTAMPTZ
 ) AS $$
 
@@ -174,7 +175,7 @@ CREATE FUNCTION update_location(json) RETURNS TABLE (
     NOW()
   )
   WHERE "id" = ($1->>'id')::INT
-  RETURNING id, zone, alley, "position", lvl, lvl_position, "updated_at"
+  RETURNING id, zone, alley, "position", lvl, lvl_position, location, "updated_at"
 
 $$ LANGUAGE SQL STRICT;
 
