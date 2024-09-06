@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --poll index.ts",
-    "test": "NODE_ENV=test jest --watchAll",
+    "test": "NODE_ENV=test jest --runInBand --verbose",
     "db:reset": "sqitch revert -y test_engrenages && sqitch deploy test_engrenages"
   },
   "jest": {
