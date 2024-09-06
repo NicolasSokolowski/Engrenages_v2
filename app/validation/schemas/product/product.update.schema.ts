@@ -8,6 +8,11 @@ export default Joi.object({
   description: Joi.string().optional().messages({
     "string.base": "The description must be of type string"
   }),
+  reference: Joi.string().min(10).max(10).optional().messages({
+    "string.base": "Reference must be of type string",
+    "string.min": "Reference must be 10 characters long.",
+    "string.max": "Reference must be 10 characters long.",
+  }),
   ean: Joi.string().min(13).max(13).optional().messages({
     "string.base": "The EAN must be of type string",
     "string.min": "Please provide a correct EAN",
@@ -22,7 +27,7 @@ export default Joi.object({
   height: Joi.number().optional().messages({
     "string.base": "The length must be of type number"
   }),
-  product_img: Joi.string().optional().messages({
+  product_image_url: Joi.string().optional().messages({
     "string.base": "The product image link must be of type string"
   }),
   price: Joi.number().optional().messages({
