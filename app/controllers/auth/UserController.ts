@@ -11,7 +11,8 @@ import { NotFoundError } from "../../errors/NotFoundError.error";
 
 export class UserController extends CoreController<UserControllerReq, UserDatamapperReq> {
   constructor(datamapper: UserControllerReq["datamapper"]) {
-    super(datamapper);
+    const field = "email";
+    super(datamapper, field);
 
     this.datamapper = datamapper;
   }
@@ -42,43 +43,6 @@ export class UserController extends CoreController<UserControllerReq, UserDatama
     const userJwt = generateToken(newUser);
 
     res.status(201).send({ user: newUser, tokens: userJwt});
-  }
-
-  update = async (req: Request, res: Response): Promise<void> => {
-    const id: number = parseInt(req.params.id);
-
-    if (!id) {
-      throw new BadRequestError("This id doesn't exist");
-    }
-
-    let { first_name, last_name, email, role_name }: Partial<UserDatamapperReq["data"]> = req.body;
-
-    const userToUpdate = await this.datamapper.findByPk(id);
-
-    if (!userToUpdate) {
-      throw new NotFoundError();
-    }
-
-    first_name ? first_name : first_name = userToUpdate.first_name;
-    last_name ? last_name : last_name = userToUpdate.last_name;
-    email ? email : email = userToUpdate.email;
-    role_name ? role_name : role_name = userToUpdate.role_name;
-
-    const newUserData = { 
-      ...userToUpdate, 
-      first_name,
-      last_name,
-      email,
-      role_name
-    };
-
-    const updatedUser = await this.datamapper.update(newUserData);
-
-    if (!updatedUser) {
-      throw new DatabaseConnectionError();
-    }
-
-    res.status(200).send(updatedUser);
   }
 
   updatePassword = async (req: Request, res: Response): Promise<void> => {

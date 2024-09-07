@@ -10,7 +10,8 @@ import { UserDatamapperReq } from "../../datamappers/index.datamappers";
 
 export class AuthController extends CoreController<UserControllerReq, UserDatamapperReq> {
   constructor(datamapper: UserControllerReq["datamapper"]) {
-    super(datamapper);
+    const field = "";
+    super(datamapper, field);
 
     this.datamapper = datamapper;
   }

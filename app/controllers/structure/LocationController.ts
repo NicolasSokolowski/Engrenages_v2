@@ -7,8 +7,8 @@ import { NotFoundError } from "../../errors/NotFoundError.error";
 
 export class LocationController extends CoreController<LocationControllerReq, LocationDatamapperReq> {
   constructor(datamapper: LocationControllerReq["datamapper"]) {
-
-    super(datamapper);
+    const field = "";
+    super(datamapper, field);
     this.datamapper = datamapper;
   }
 
@@ -18,7 +18,6 @@ export class LocationController extends CoreController<LocationControllerReq, Lo
     const newLocation = `${data.zone}-${data.alley}-${data.position}-${data.lvl}-${data.lvl_position}`;
 
     const checkIfItemExists = await this.datamapper.findBySpecificField("location", newLocation);
-
 
     if (!checkIfItemExists) {
   
@@ -52,29 +51,52 @@ export class LocationController extends CoreController<LocationControllerReq, Lo
       'lvl', 
       'lvl_position'
     ];
-    
-    for (const field of updateFields) {
-      if (data[field] === undefined) {
-        data[field] = itemToUpdate[field];
+
+    const bodyLocationCheck = updateFields.some((field) => data[field] !== undefined);
+
+    if (bodyLocationCheck) {
+      for (const field of updateFields) {
+        if (data[field] === undefined) {
+          data[field] = itemToUpdate[field];
+        }
       }
-    }
+  
+      data = {
+        ...data,
+        id
+      }
+      
+      const newLocation = `${data.zone}-${data.alley}-${data.position}-${data.lvl}-${data.lvl_position}`;
+      
+      const checkIfEntreeExists = await this.datamapper.findBySpecificField("location", newLocation);
+  
+      if (!checkIfEntreeExists) {
+  
+        const updatedItem = await this.datamapper.update(data);
+        res.status(200).send(updatedItem);
+  
+      } else {
+        throw new BadRequestError(`Location ${newLocation} already exists.`);
+      }
 
-    data = {
-      ...data,
-      id
-    }
-    
-    const newLocation = `${data.zone}-${data.alley}-${data.position}-${data.lvl}-${data.lvl_position}`;
-    
-    const checkIfEntreeExists = await this.datamapper.findBySpecificField("location", newLocation);
+    } else {
 
-    if (!checkIfEntreeExists) {
+      data = {
+        ...data,
+        id
+      }
 
       const updatedItem = await this.datamapper.update(data);
       res.status(200).send(updatedItem);
+    }
+    
+  }
 
-    } else {
-      throw new BadRequestError(`Location ${newLocation} already exists.`);
+  preDeletionCheck = async (field: string, value:any): Promise<void> => {
+    const checkIfUsed = await this.datamapper.checkIfNotNull("product_reference", value.id);
+
+    if (checkIfUsed.length !== 0) {
+      throw new BadRequestError("Location is currenty occupied by a reference.")
     }
   }
 }
