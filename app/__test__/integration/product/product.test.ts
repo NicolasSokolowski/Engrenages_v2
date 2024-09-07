@@ -247,6 +247,8 @@ describe("Product tests", () => {
         "product_blockage_name": `${productBlockage.name}`
       })
       .expect(201);
+
+    console.log(productBlockage);
   
     const responseOne = await request(app)
       .patch(`/api/product/blockage/${productBlockage.id}`)
@@ -256,6 +258,8 @@ describe("Product tests", () => {
         "name": "ZZZ"
       })
       .expect(200);
+
+      console.log("2");
 
     const responseTwo = await request(app)
       .get(`/api/product/${product.body.id}`)
