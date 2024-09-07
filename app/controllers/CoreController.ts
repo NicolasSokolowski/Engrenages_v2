@@ -6,10 +6,12 @@ import { EntityDatamapperReq } from "../datamappers/index.datamappers";
 import { EntityControllerReq } from "./index.controllers";
 
 
-export abstract class CoreController<T extends EntityControllerReq, Y extends EntityDatamapperReq["data"]> {
+export abstract class CoreController<T extends EntityControllerReq, Y extends EntityDatamapperReq> {
+  protected field: string;
 
-  constructor(public datamapper: T["datamapper"]) {}
-
+  constructor(public datamapper: T["datamapper"], field: string) {
+    this.field = field;
+  }
 
   getByPk = async (req: Request, res: Response): Promise<void> => {
     const id: number = parseInt(req.params.id);
@@ -43,12 +45,54 @@ export abstract class CoreController<T extends EntityControllerReq, Y extends En
   }
 
   create = async (req: Request, res: Response): Promise<void> => {
-    const item: Y = req.body;
+    const data: Y["data"] = req.body;
 
-    const createdItem = await this.datamapper.insert(item);
+    const checkIfExists = await this.datamapper.findBySpecificField(this.field, data[this.field]);
+    
+    if (checkIfExists) {
+      throw new BadRequestError(`Provided item already exists.`)
+    }
+
+    const createdItem = await this.datamapper.insert(data);
+
+    if (!createdItem) {
+      throw new DatabaseConnectionError();
+    }
 
     res.status(201).json(createdItem);
   }
+
+  update = async (req: Request, res: Response): Promise<void> => {
+    const id = parseInt(req.params.id, 10);
+    let data = req.body;
+
+    const checkIfExists = await this.datamapper.findBySpecificField(this.field, data[this.field]);
+    
+    if (checkIfExists) {
+      throw new BadRequestError(`Provided item already exists.`)
+    }
+
+    const itemToUpdate = await this.datamapper.findByPk(id);
+
+    if (!itemToUpdate) {
+      throw new NotFoundError();
+    }
+
+    data = {
+      ...data,
+      id
+    }
+
+    const updatedItem = await this.datamapper.update(data);
+
+    if (!updatedItem) {
+      throw new DatabaseConnectionError();
+    }
+
+    res.status(200).send(updatedItem);
+  }
+
+  preDeletionCheck = async (field: string, value:any): Promise<void> => {}
 
   delete = async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id);
@@ -62,6 +106,8 @@ export abstract class CoreController<T extends EntityControllerReq, Y extends En
     if (!itemToDelete) {
       throw new NotFoundError();
     }
+
+    await this.preDeletionCheck(this.field, itemToDelete);
 
     const deletedItem = await this.datamapper.delete(id);
 

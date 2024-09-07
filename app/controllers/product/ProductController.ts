@@ -1,41 +1,21 @@
-import { Request, Response } from "express";
 import { ProductDatamapperReq } from "../../datamappers/interfaces/product/ProductDatamapperReq";
-import { BadRequestError, NotFoundError } from "../../errors/index.errors";
+import { BadRequestError } from "../../errors/BadRequestError.error";
 import { CoreController } from "../CoreController";
+import { locationController } from "../index.controllers";
 import { ProductControllerReq } from "../interfaces/product/ProductControllerReq";
 
 export class ProductController extends CoreController<ProductControllerReq, ProductDatamapperReq> {
   constructor(datamapper: ProductControllerReq["datamapper"]) {
-    super(datamapper);
+    const field = "reference";
+    super(datamapper, field);
     this.datamapper = datamapper;
   }
 
-  update = async (req: Request, res: Response): Promise<void> => {
-    const id = parseInt(req.params.id, 10);
-    let data = req.body;
-    
-    const itemToUpdate = await this.datamapper.findByPk(id);
+  preDeletionCheck = async (field: string, value:any): Promise<void> => {
+    const checkIfUsed = await locationController.datamapper.findBySpecificField("product_reference", value[field]);
 
-    if (!itemToUpdate) {
-      throw new NotFoundError();
+    if (checkIfUsed) {
+      throw new BadRequestError("Item still in use.")
     }
-
-    if (data.reference) {
-      const checkIfEntreeExists = await this.datamapper.findBySpecificField("reference", data.reference);
-
-      if (checkIfEntreeExists) {
-        throw new BadRequestError(`Product reference ${data.reference} already exists.`)
-      }
-    }
-
-    data = {
-      ...data,
-      id
-    }
-
-    const updatedItem = await this.datamapper.update(data);
-    
-    res.status(200).send(updatedItem);
-
   }
 }
