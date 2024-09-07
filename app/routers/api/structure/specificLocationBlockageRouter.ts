@@ -4,7 +4,7 @@ import { requireAuth } from "../../../middlewares/requireAuth.middleware";
 import { checkPermissions } from "../../../middlewares/checkPermissions.middleware";
 import { locationBlockageController } from "../../../controllers/index.controllers";
 import { validateRequest } from "../../../middlewares/validateRequest.middleware";
-import { productBlockageUpdateSchema } from "../../../validation/index.validation";
+import { locationBlockageUpdateSchema } from "../../../validation/index.validation";
 
 
 const specificLocationBlockageRouter = express.Router({ mergeParams: true });
@@ -18,7 +18,7 @@ specificLocationBlockageRouter.route("/")
   .patch(
     errorCatcher(requireAuth),
     errorCatcher(checkPermissions(["admin"])),
-    validateRequest("body", productBlockageUpdateSchema),
+    validateRequest("body", locationBlockageUpdateSchema),
     errorCatcher(locationBlockageController.update)
   )
   .delete(
