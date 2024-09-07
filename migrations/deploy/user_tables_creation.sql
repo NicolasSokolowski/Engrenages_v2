@@ -15,7 +15,7 @@ CREATE TABLE "user" (
   "last_name" VARCHAR(50) NOT NULL,
   "email" VARCHAR(100) NOT NULL UNIQUE,
   "password" TEXT NOT NULL,
-  "role_name" VARCHAR(10) NOT NULL REFERENCES "role"("name"),
+  "role_name" VARCHAR(10) NOT NULL REFERENCES "role"("name") ON UPDATE CASCADE,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ
 );

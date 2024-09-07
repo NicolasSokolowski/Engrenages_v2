@@ -101,6 +101,7 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
     height DECIMAL,
     product_image_url TEXT,
     price DECIMAL,
+    product_blockage_name CHAR(3),
     updated_at TIMESTAMPTZ
 ) AS $$
 
@@ -114,6 +115,7 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
     "height",
     "product_image_url",
     "price",
+    "product_blockage_name",
     "updated_at"
   ) = (
     COALESCE(($1->>'title')::VARCHAR(100), "title"),
@@ -125,10 +127,11 @@ CREATE FUNCTION update_product(json) RETURNS TABLE (
     COALESCE(($1->>'height')::DECIMAL, "height"),
     COALESCE(($1->>'product_image_url')::TEXT, "product_image_url"),
     COALESCE(($1->>'price')::DECIMAL, "price"),
+    COALESCE(($1->>'product_blockage_name')::CHAR(3), "product_blockage_name"),
     NOW()
   )
   WHERE "id" = ($1->>'id')::INT
-  RETURNING id, title, description, reference, ean, length, width, height, product_image_url, price, "updated_at"
+  RETURNING id, title, description, reference, ean, length, width, height, product_image_url, price, product_blockage_name, "updated_at"
 
 $$ LANGUAGE SQL STRICT;
 
