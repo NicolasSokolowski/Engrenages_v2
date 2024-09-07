@@ -26,10 +26,12 @@ export default Joi.object({
     "string.min": "The lvl_position must be 2 character long",
     "string.max": "The lvl_position must be 2 character long",
   }),
-  location_type_name: Joi.forbidden().messages({
-    "any.unknown": "The location type can't be updated with the location."
+  location_type_name: Joi.string().max(5).optional().messages({
+    "string.base": "The location_type_name must be of type string",
+    "string.max": "The location_type_name must be 5 characters long or less"
   }),
-  location_blockage_name: Joi.forbidden().messages({
-    "any.unknown": "The location blockage type can't be updated with the location."
+  location_blockage_name: Joi.string().optional().max(3).messages({
+    "string.base": "The location_blockage_name must be of type string",
+    "string.max": "The location_blockage_name must be 3 characters long or less"
   })
 }).min(1);
